@@ -3,6 +3,10 @@ import React, {useState, useEffect} from 'react'
 
 function Adding(){
 
+    useEffect(() => {
+        document.title = "Multi-Task Timer";
+    }, []);
+
     const [task, setTask] = useState('');
     const [hours, setHours] = useState('');
     const [minutes, setMinutes] = useState('');
