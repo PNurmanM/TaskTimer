@@ -11,23 +11,28 @@ function Adding(){
     const [hours, setHours] = useState('');
     const [minutes, setMinutes] = useState('');
     const [seconds, setSeconds] = useState('');
-    const [totalTime, setTT] = useState(60000);
 
 
     const [watches, setWatches] = useState(() => {
-        if(window.localStorage.getItem('watches') !== null){
-            return JSON.parse(window.localStorage.getItem('watches'));
-        }else{
+       // if(window.localStorage.getItem('watches') !== null){
+          //  return JSON.parse(window.localStorage.getItem('watches'));
+       // }else{
             return [];
-        }
+       // }
     });
 
 
-    useEffect(() => {
-        window.localStorage.setItem('watches', JSON.stringify(watches))
-    },[watches])
+  //  useEffect(() => {
+  //      window.localStorage.setItem('watches', JSON.stringify(watches))
+  //  },[watches]);
 
-    useEffect(() => {
+
+  //  useEffect(() => {
+  //     console.log("Watches updated:", watches);
+  //  }, [watches]);
+    
+    
+    function addWatch(){
 
         let calculatedTime = 0;
 
@@ -43,14 +48,12 @@ function Adding(){
         if(isNaN(parseInt(seconds)) && isNaN(parseInt(minutes)) && isNaN(parseInt(hours))){
             calculatedTime = 60000;
         } 
-        setTT(calculatedTime);
-        
-    }, [hours, minutes, seconds]);
-    
-    function addWatch(){
+
+
         const newWatch = {
+            watchA: <Stopwatch task={task} timing={calculatedTime}/>,
             taskA: task,
-            timingA: totalTime,
+            timingA: calculatedTime,
         };
 
         setWatches((w) => [newWatch, ...w]);       
@@ -86,6 +89,8 @@ function Adding(){
         setWatches(w => w.filter((watch, i) => i != index));
     }
 
+    //<Stopwatch task={watch.taskA} timing={watch.timingA}/>
+
     return (
             <>
                 <div className="addingCont">
@@ -93,7 +98,7 @@ function Adding(){
                         <p >Task:</p>
                         <input
                              type="text"
-                             placeholder="Enter a task and a time..."
+                             placeholder="Enter a task and a time... (i love you isha)"
                              value={task}
                              onChange={handleTaskChange}
                              >
@@ -133,12 +138,15 @@ function Adding(){
                         <button onClick={addWatch}>Add Task</button>
                     </div>
                 </div>
-                <div>
+                <div className="listStopDiv">
                     <ul>
                         {watches.map((watch, index) => 
                         <li key={index}>
-                            <button onClick={() => deleteListItem(index)}>X</button>
-                            {<Stopwatch task={watch.taskA} timing={watch.timingA}/>}
+                            <button className="deleteButton" onClick={() => deleteListItem(index)}>X</button>
+                            <div>
+                                {watch.watchA}
+                            </div>
+                            
                         </li>)}  
                     </ul>
                 </div>

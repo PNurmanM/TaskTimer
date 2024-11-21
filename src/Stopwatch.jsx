@@ -1,11 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
 
-function Stopwatch(props){
+function Stopwatch({task, timing}){
 
     const [isRunning, setIsRunning] = useState(false);
     const [formatting, setFormatting] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
-    const [pickTime, setPickTime] = useState(props.timing);
+    const [pickTime, setPickTime] = useState(timing);
     const intervalIdRef = useRef(null);
     const startTimeRef = useRef(0);
 
@@ -31,8 +31,9 @@ function Stopwatch(props){
     }, [isRunning]);
 
     useEffect(() => {
-        setPickTime((p) => props.timing - elapsedTime);
+        setPickTime((p) => timing - elapsedTime);
     }, [elapsedTime]);
+
 
     function start(){
         setIsRunning(true);
@@ -46,7 +47,7 @@ function Stopwatch(props){
     function reset(){
         setElapsedTime(0);
         setIsRunning(false);
-        setPickTime(props.timing);
+        setPickTime(timing);
     }
 
     function formatTime1(){
@@ -145,7 +146,7 @@ function Stopwatch(props){
     return(
         <>
             <div className="stopWatch">
-                <h1>{props.task}</h1>
+                <h1>{task}</h1>
                 <div className="display">{pickSetFormat()}</div>
                 <div className="controls">
                     <button onClick={start} className="start">Start</button>
