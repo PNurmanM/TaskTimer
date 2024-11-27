@@ -4,10 +4,12 @@ import React, {useState, useEffect} from 'react'
 function Adding(){
 
     const [task, setTask] = useState('');
+    const [descVal, setDescVal] = useState('');
     const [hours, setHours] = useState('');
     const [minutes, setMinutes] = useState('');
     const [seconds, setSeconds] = useState('');
     const [totalTime, setTT] = useState(60000);
+    const [idTracker, setIdTracker] = useState(0);
 
 
     const [watches, setWatches] = useState(() => {
@@ -21,6 +23,11 @@ function Adding(){
 
     useEffect(() => {
         window.localStorage.setItem('watches', JSON.stringify(watches))
+
+        if(watches.length === 0){
+            setIdTracker(0);
+        }
+
     },[watches])
 
     useEffect(() => {
@@ -47,6 +54,8 @@ function Adding(){
         const newWatch = {
             taskA: task,
             timingA: totalTime,
+            id: idTracker,
+            desc: descVal,
         };
 
         setWatches((w) => [newWatch, ...w]);       
@@ -54,10 +63,20 @@ function Adding(){
         setHours('');
         setMinutes('');
         setSeconds('');
+        pushId();
+    }
+
+    function pushId(){
+        setIdTracker((c) => c = c + 1);
     }
 
     function handleTaskChange(event){
         setTask((event.target.value).charAt(0).toUpperCase() + (event.target.value).slice(1));    
+    }
+
+    function handleDescChange(event, index){
+        setDescVal((event.target.value).charAt(0).toUpperCase() + (event.target.value).slice(1));    
+        watches[index].desc = descVal;
     }
 
     function handleHChange(event){
@@ -67,7 +86,7 @@ function Adding(){
     }
 
     function handleMChange(event){
-        if(event.target.value < 61){
+        if(event.target.value < 61){ 
             setMinutes(event.target.value);
         }
     }
@@ -79,7 +98,9 @@ function Adding(){
     }
 
     function deleteListItem(index){
+        window.localStorage.removeItem(`clock${watches[index].id}`);
         setWatches(w => w.filter((watch, i) => i != index));
+        
     }
 
     return (
@@ -89,7 +110,7 @@ function Adding(){
                         <p >Task:</p>
                         <input
                              type="text"
-                             placeholder="Enter a task and a time..."
+                             placeholder="  Enter a task and a time..."
                              value={task}
                              onChange={handleTaskChange}
                              >
@@ -129,12 +150,18 @@ function Adding(){
                         <button onClick={addWatch}>Add Task</button>
                     </div>
                 </div>
-                <div>
+                <div className="listStopDiv">
                     <ul>
                         {watches.map((watch, index) => 
                         <li key={index}>
-                            <button onClick={() => deleteListItem(index)}>X</button>
-                            {<Stopwatch task={watch.taskA} timing={watch.timingA}/>}
+                            
+                            <button className="deleteButton" onClick={() => deleteListItem(index)}>X</button>
+                            <div>
+                            {<Stopwatch key={watch.id} dynamicKey={watch.id} task={watch.taskA} timing={watch.timingA}/>}
+                            </div>
+                            <div className="descCont">
+                                <textarea value={watch.desc} onChange={(event) => handleDescChange(event, index)} placeholder="Type your task description here..."></textarea>
+                            </div>
                         </li>)}  
                     </ul>
                 </div>

@@ -3,20 +3,59 @@ import React, {useState, useEffect, useRef} from 'react';
 function Stopwatch(props){
 
     const [isRunning, setIsRunning] = useState(false);
-    const [formatting, setFormatting] = useState(false);
-    const [elapsedTime, setElapsedTime] = useState(0);
-    const [pickTime, setPickTime] = useState(props.timing);
+    const [formatting, setFormatting] = useState(true);
     const intervalIdRef = useRef(null);
     const startTimeRef = useRef(0);
+
+    useEffect(() => {
+        if(window.localStorage.getItem(`clock${props.dynamicKey}`) !== null){
+            let Locdata = JSON.parse(window.localStorage.getItem(`clock${props.dynamicKey}`));
+
+            setElapsedTime(Locdata.last);
+
+            if(Locdata.state){
+                start();
+            }
+        }
+    }, []);
+
+    const [elapsedTime, setElapsedTime] = useState(() => {
+
+        if(window.localStorage.getItem(`clock${props.dynamicKey}`) !== null){
+            let Locdata = JSON.parse(window.localStorage.getItem(`clock${props.dynamicKey}`));
+
+            if(Locdata.last !== null){
+                return Locdata.last;
+            }
+        }
+
+        return 0;
+    });
+
+    const [pickTime, setPickTime] = useState(() => {
+
+        if(window.localStorage.getItem(`clock${props.dynamicKey}`) !== null){
+            let Locdata = JSON.parse(window.localStorage.getItem(`clock${props.dynamicKey}`));
+
+            if(Locdata.last !== null){
+                return props.timing - Locdata.last;
+            }
+        }
+
+        return props.timing;
+    });
 
     useEffect(() => {
         if(pickTime < 1){
             stop();
             setPickTime(0);
         }
+        window.localStorage.setItem(`clock${props.dynamicKey}`, JSON.stringify({state:isRunning, last:elapsedTime}));
     }, [pickTime]);
 
     useEffect(() => {
+
+        window.localStorage.setItem(`clock${props.dynamicKey}`, JSON.stringify({state:isRunning, last:elapsedTime}));
 
         if(isRunning){
             intervalIdRef.current = setInterval(() => {
