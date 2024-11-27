@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/   "homepage": "https://PNurmanM.github.io/stopWatchApp",
+// https://vite.dev/config/   "homepage": "https://PNurmanM.github.io/TaskTimer",
 export default defineConfig({
-  base: '/stopWatchApp/',
+  base: '/TaskTimer/',
   plugins: [react()],
 })
